@@ -78,8 +78,11 @@ WSGI_APPLICATION = 'prototipo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'degae9jdbq0md0',
+        'USER': 'jjaxfwdrvmpgnf',
+        'PASSWORD': '9d9410c96f1898c577181029c8870e888c7a65d73fabb2b55a28292b5a5c4d7c',
+        'HOST':'ec2-23-23-234-118.compute-1.amazonaws.com'
     }
 }
 
