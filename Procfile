@@ -1,1 +1,1 @@
-web: gunicorn prototipo_wsgi.py --log-file -
+web: gunicorn prototipo.wsgi --log-file -
