@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}My projects{% endblock %}
+{% block head %}My projects{% endblock %}
+{% block content %}
+{% if projects.count > 0 %}
+{% for project in projects%}
+<div>
+  <a href="/posts/project/{{project.id}}/">{{ project.projectname }}</a></h1>
+  <p>{{ project.description |truncatewords:"10"}}</p>
+</div>
+{% endfor %}
+{% else %}
+<p>You don't have any projects</p>
+{% endif %}
+<a href="/posts/home/">Return</a>
+{% endblock %}

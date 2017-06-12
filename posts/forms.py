@@ -36,7 +36,7 @@ class RegistrationForm(forms.Form):
 
 class CreateForm(forms.Form):
     projectname = forms.RegexField(regex=r'^\w+$', widget=forms.TextInput(attrs=dict(required=True, max_length=100)), label=_("Project Name"))
-    description = forms.RegexField(regex=r'^\w+$', widget=forms.TextInput(attrs=dict(required=True, max_length=2000)), label=_("Description"))
+    description = forms.CharField(widget=forms.Textarea(attrs=dict(required=True, max_length=2000)), label=_("Description"))
     value = forms.DecimalField(widget=forms.NumberInput(attrs=dict(required=True, max_digits=12, max_decimal_places=2)), label=_("Value in $"))
 
     def clean_projectname(self):
@@ -45,3 +45,10 @@ class CreateForm(forms.Form):
         except Project.DoesNotExist:
             return self.cleaned_data['projectname']
         raise forms.ValidationError(_("Projectname already exists."))
+
+class MessageForm(forms.Form):
+    title = forms.RegexField(regex=r'^\w+$', widget=forms.TextInput(attrs=dict(required=True, max_length=30)), label=_("Title"))
+    message = forms.CharField(widget=forms.Textarea(attrs=dict(required=True, max_length=2000)), label=_("Message"))
+
+class AnswerForm(forms.Form):
+    answer = forms.CharField(widget=forms.Textarea(attrs=dict(required=True, max_length=2000)), label=_("Answer"))

@@ -14,7 +14,8 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.template.loader import get_template
 from django.http import HttpResponse
-from posts.models import Client, Project
+from posts.models import Client, Project, Message
+from django.contrib.auth.models import User
 
 @csrf_protect
 def register(request):
@@ -83,4 +84,83 @@ def create(request):
 def create_success(request):
     template = get_template('emprendedor/success.html')
     variables = {}
+    return HttpResponse(template.render(variables, request))
+
+@csrf_protect
+def show(request):
+    user=request.user
+    template = get_template('emprendedor/show.html')
+    variables = {'projects':Project.objects.filter(user=user)}
+    return HttpResponse(template.render(variables,request))
+
+@csrf_protect
+def project(request, project_id):
+    template = get_template('emprendedor/project.html')
+    variables = {'project':Project.objects.get(id=project_id)}
+    return HttpResponse(template.render(variables,request))
+
+@csrf_protect
+def message(request, project_id):
+    user=request.user
+    project=Project.objects.get(id=project_id)
+    userproxy=project.user
+    if request.method == 'POST':
+        recipient=User.objects.get(id=userproxy.id)
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = Message.objects.create(
+            sender=user,
+            recipient=recipient,
+            project=project,
+            title=form.cleaned_data['title'],
+            message=form.cleaned_data['message'],
+            )
+            return HttpResponseRedirect('/posts/message/success/')
+    else:
+        form = MessageForm()
+    variables={
+    'form': form,
+    'project':Project.objects.get(id=project_id),
+    }
+    template = get_template('emprendedor/message.html')
+    return HttpResponse(template.render(variables, request))
+
+def message_send(request):
+    template = get_template('emprendedor/send.html')
+    variables = {}
+    return HttpResponse(template.render(variables, request))
+
+@csrf_protect
+def inbox(request):
+    user=request.user
+    template = get_template('emprendedor/inbox.html')
+    variables = {'messages':Message.objects.filter(recipient=user)}
+    return HttpResponse(template.render(variables,request))
+
+@csrf_protect
+def answer(request, message_id):
+    user=request.user
+    message=Message.objects.get(id=message_id)
+    userproxy=message.sender
+    projectproxy=message.project
+    if request.method == 'POST':
+        recipient=User.objects.get(id=userproxy.id)
+        project=Project.objects.get(id=projectproxy.id)
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            message = Message.objects.create(
+            sender=user,
+            recipient=recipient,
+            project=project,
+            title=message.title,
+            message=form.cleaned_data['answer'],
+            )
+            return HttpResponseRedirect('/posts/message/success/')
+    else:
+        form = AnswerForm()
+    variables={
+    'form': form,
+    'message':Message.objects.get(id=message_id),
+    }
+    template = get_template('emprendedor/answer.html')
     return HttpResponse(template.render(variables, request))
