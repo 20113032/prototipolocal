@@ -5,7 +5,12 @@
 <div>
   <form method="post" action=".">{% csrf_token %}
     <p>Project: {{ message.project.projectname }}</p>
-    <p>Backer: {{ message.sender.username }}</p>
+    {% if client.usertype == '1' %}
+    <p>Backer: {{ client.firstname }} {{ client.lastname }}</p>
+    {% else %}
+    <p>Entrepreneur: {{ client.firstname }} {{ client.lastname }}</p>
+    {% endif %}
+    <p>Message: {{ message.message }}
       <table border="0">
           {{ form.as_table }}
       </table>

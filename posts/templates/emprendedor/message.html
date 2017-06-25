@@ -5,7 +5,7 @@
 <div>
   <form method="post" action=".">{% csrf_token %}
     <p>Project: {{ project.projectname }}</p>
-    <p>Entreprenuer: {{ project.user.username }}</p>
+    <p>Entrepreneur: {{ client.firstname }} {{ client.lastname }}</p>
       <table border="0">
           {{ form.as_table }}
       </table>

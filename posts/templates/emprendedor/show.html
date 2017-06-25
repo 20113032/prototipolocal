@@ -5,8 +5,8 @@
 {% if projects.count > 0 %}
 {% for project in projects%}
 <div>
-  <a href="/posts/project/{{project.id}}/">{{ project.projectname }}</a></h1>
-  <p>{{ project.description |truncatewords:"10"}}</p>
+  Project: <a href="/posts/project/{{project.id}}/">{{ project.projectname }}</a>
+  <p>Description: {{ project.description |truncatewords:"10"}}</p>
 </div>
 {% endfor %}
 {% else %}
