@@ -6,7 +6,16 @@
 {% for message in messages%}
 <div>
   <a href="/posts/answer/{{message.id}}/">{{ message.title }}</a></h1>
-  <p>{{ message.message |truncatewords:"10"}}</p>
+  {% for client in clients %}
+  {% if message.sender == client.user %}
+    {% if client.usertype == '1' %}
+    <p>Backer: {{ client.firstname }} {{ client.lastname }} Project: {{ message.project.projectname }}</p>
+    {% else %}
+    <p>Entrepreneur: {{ client.firstname }} {{ client.lastname }} Project: {{ message.project.projectname }}</p>
+    {% endif %}
+  {% endif %}
+  {% endfor %}
+  <p>Message: {{ message.message |truncatewords:"10"}}</p>
 </div>
 {% endfor %}
 {% else %}

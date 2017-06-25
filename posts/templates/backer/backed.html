@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Backed projects{% endblock %}
+{% block head %}Backed projects{% endblock %}
+{% block content %}
+{% if transactions.count > 0 %}
+{% for transaction in transactions%}
+<div>
+  Project: <a href="/posts/project/{{transaction.project.id}}/">{{ transaction.project.projectname }}</a></h1>
+  <p>Description: {{ transaction.project.description |truncatewords:"10"}}</p>
+  <p>Ammount donated: $ {{ transaction.ammount }}</p>
+</div>
+{% endfor %}
+{% else %}
+<p>You haven't backed any projects</p>
+{% endif %}
+<a href="/posts/home/">Return</a>
+{% endblock %}

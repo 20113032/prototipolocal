@@ -3,8 +3,12 @@
 {% block head %}Project Partners{% endblock %}
 {% block content %}
     <p>Welcome {{ user.username }}</p>
+    {% if client.usertype == '2' %}
     <a href="/posts/create/">Create new project</a>
     <a href="/posts/show/">Show projects</a>
+    {% else %}
+    <a href="/posts/backed/">Backed projects</a>
+    {% endif %}
     <p><a href="/posts/inbox/">Inbox</a></p>
     <p><a href="/posts/logout/">Logout</a></p>
 {% endblock %}

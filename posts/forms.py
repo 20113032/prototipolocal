@@ -12,7 +12,7 @@ class RegistrationForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(attrs=dict(required=True, max_length=30)), label=_("Email address"))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs=dict(required=True, max_length=30, render_value=False)), label=_("Password"))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs=dict(required=True, max_length=30, render_value=False)), label=_("Password (again)"))
-    CHOICES = [("1", "Investor"), ("2", "Entreprenuer")]
+    CHOICES = [("1", "Backer"), ("2", "Entreprenuer")]
     usertype = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, label=_("User type"))
 
     def clean_username(self):
@@ -37,7 +37,7 @@ class RegistrationForm(forms.Form):
 class CreateForm(forms.Form):
     projectname = forms.RegexField(regex=r'^\w+$', widget=forms.TextInput(attrs=dict(required=True, max_length=100)), label=_("Project Name"))
     description = forms.CharField(widget=forms.Textarea(attrs=dict(required=True, max_length=2000)), label=_("Description"))
-    value = forms.DecimalField(widget=forms.NumberInput(attrs=dict(required=True, max_digits=12, max_decimal_places=2)), label=_("Value in $"))
+    value = forms.DecimalField(widget=forms.NumberInput(attrs=dict(required=True, max_digits=12, max_decimal_places=2)), label=_("Goal in $"))
 
     def clean_projectname(self):
         try:
@@ -52,3 +52,6 @@ class MessageForm(forms.Form):
 
 class AnswerForm(forms.Form):
     answer = forms.CharField(widget=forms.Textarea(attrs=dict(required=True, max_length=2000)), label=_("Answer"))
+
+class PaymentForm(forms.Form):
+    ammount = forms.DecimalField(widget=forms.NumberInput(attrs=dict(required=True, max_digits=12, max_decimal_places=2)), label=_("Ammount in $"))

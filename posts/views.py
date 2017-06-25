@@ -14,7 +14,7 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.template.loader import get_template
 from django.http import HttpResponse
-from posts.models import Client, Project, Message
+from posts.models import Client, Project, Message, Transaction
 from django.contrib.auth.models import User
 
 @csrf_protect
@@ -54,8 +54,11 @@ def logout_page(request):
 
 @login_required
 def home(request):
+    user=request.user
+    client = Client.objects.get(user=user.id)
     variables={
-    'user': request.user
+    'user': request.user,
+    'client': Client.objects.get(user=user.id),
     }
     template = get_template('home.html')
     return HttpResponse(template.render(variables,request))
@@ -94,9 +97,13 @@ def show(request):
     return HttpResponse(template.render(variables,request))
 
 @csrf_protect
-def project(request, project_id):
-    template = get_template('emprendedor/project.html')
-    variables = {'project':Project.objects.get(id=project_id)}
+def backed(request):
+    user=request.user
+    transactions = Transaction.objects.filter(backer=user)
+    template = get_template('backer/backed.html')
+    variables = {
+    'transactions':Transaction.objects.filter(backer=user),
+    }
     return HttpResponse(template.render(variables,request))
 
 @csrf_protect
@@ -104,6 +111,7 @@ def message(request, project_id):
     user=request.user
     project=Project.objects.get(id=project_id)
     userproxy=project.user
+    client = Client.objects.get(user=userproxy)
     if request.method == 'POST':
         recipient=User.objects.get(id=userproxy.id)
         form = MessageForm(request.POST)
@@ -121,6 +129,7 @@ def message(request, project_id):
     variables={
     'form': form,
     'project':Project.objects.get(id=project_id),
+    'client':Client.objects.get(user=userproxy)
     }
     template = get_template('emprendedor/message.html')
     return HttpResponse(template.render(variables, request))
@@ -130,11 +139,20 @@ def message_send(request):
     variables = {}
     return HttpResponse(template.render(variables, request))
 
+def donated(request):
+    template = get_template('backer/donated.html')
+    variables = {}
+    return HttpResponse(template.render(variables, request))
+
 @csrf_protect
 def inbox(request):
     user=request.user
+    client = Client.objects.filter()
     template = get_template('emprendedor/inbox.html')
-    variables = {'messages':Message.objects.filter(recipient=user)}
+    variables = {
+    'messages':Message.objects.filter(recipient=user),
+    'clients':Client.objects.filter()
+    }
     return HttpResponse(template.render(variables,request))
 
 @csrf_protect
@@ -142,7 +160,9 @@ def answer(request, message_id):
     user=request.user
     message=Message.objects.get(id=message_id)
     userproxy=message.sender
+    client = Client.objects.get(user=userproxy)
     projectproxy=message.project
+    messageproxy=message.message
     if request.method == 'POST':
         recipient=User.objects.get(id=userproxy.id)
         project=Project.objects.get(id=projectproxy.id)
@@ -161,6 +181,35 @@ def answer(request, message_id):
     variables={
     'form': form,
     'message':Message.objects.get(id=message_id),
+    'client':Client.objects.get(user=userproxy)
     }
     template = get_template('emprendedor/answer.html')
     return HttpResponse(template.render(variables, request))
+
+@csrf_protect
+def project(request, project_id):
+    project = Project.objects.get(id=project_id)
+    user=request.user
+    userproxy=project.user
+    clientproxy = Client.objects.get(user=userproxy)
+    client = Client.objects.get(user=user)
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            transaction = Transaction.objects.create(
+            backer=user,
+            entreprenuer=userproxy,
+            project=project,
+            ammount=form.cleaned_data['ammount'],
+            )
+            return HttpResponseRedirect('/posts/donated/')
+    else:
+        form = PaymentForm()
+    variables = {
+    'form':form,
+    'project':Project.objects.get(id=project_id),
+    'clientproxy': Client.objects.get(user=userproxy),
+    'client': Client.objects.get(user=user)
+    }
+    template = get_template('emprendedor/project.html')
+    return HttpResponse(template.render(variables,request))

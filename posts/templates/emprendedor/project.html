@@ -5,11 +5,33 @@
 <div>
   <p>Description: {{ project.description }}</p>
   <p>Value: $ {{ project.value }}</p>
-  {% if project.user.id == user.id %}
-  {% else %}
+  <p>Entrepreneur: {{ clientproxy.firstname }} {{ clientproxy.lastname }}</p>
+  {% if client.usertype == '1' %}
   <a href="/posts/message/{{project.id}}/">Send Message</a>
+  <form method="post" action=".">{% csrf_token %}
+      <table border="0">
+          {{ form.as_table }}
+      </table>
+      <input type="submit" value="Donate" />
+  </form>
+  <form method="POST">{% csrf_token %}
+  <p><script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
+    data-amount="2000"
+    data-name="Stripe.com"
+    data-description="2 widgets"
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-locale="auto"
+    data-zip-code="true">
+  </script></p>
+  </form>
   {% endif %}
 </div>
+{% if client.usertype == '2' %}
 <a href="/posts/show/">My projects</a>
+{% else %}
+<a href="/posts/backed/">My projects backed</a>
+{% endif %}
 <a href="/posts/home/">Home</a>
 {% endblock %}
