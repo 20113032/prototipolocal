@@ -78,8 +78,11 @@ WSGI_APPLICATION = 'prototipo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd9hu2ueon2oem',
+        'USER': 'gvbbtzhwmrkbvw',
+        'PASSWORD': 'c441b619a07abfbdd3f816916c1e23ca4f53f9ad3491d7ae1c147157ffd0d018',
+        'HOST':'ec2-54-225-236-102.compute-1.amazonaws.com'
     }
 }
 
@@ -102,6 +105,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.9/howto/static-files/
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_URL = '/static/'
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static'),
+)
 
 
 # Internationalization
